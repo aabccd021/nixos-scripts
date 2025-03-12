@@ -81,6 +81,6 @@ NIX_SSHOPTS="
   -o StrictHostKeyChecking=yes
   -o UserKnownHostsFile=$tmpdir/known_hosts
 " \
-  exec nixos-rebuild switch \
+  nixos-rebuild switch \
   --flake ".#$name" \
   --target-host "$user@$ip"
