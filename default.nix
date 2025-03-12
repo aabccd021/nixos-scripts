@@ -1,7 +1,7 @@
 { pkgs }:
 let
   scriptDefs = {
-    nixos-rebuild-local = [ pkgs.sops ];
+    nixos-rebuild-local = [ pkgs.sops pkgs.openssh ];
     nixos-rebuild-remote = [ pkgs.sops pkgs.openssh ];
     nixos-ssh = [ pkgs.sops pkgs.openssh ];
   };
