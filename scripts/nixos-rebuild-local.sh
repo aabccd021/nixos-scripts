@@ -1,3 +1,5 @@
+set -x
+
 ip=""
 name=""
 host_public_key=""
