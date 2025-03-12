@@ -86,6 +86,8 @@ rsync \
   --info=progress2 \
   --human-readable \
   --no-inc-recursive \
+  --exclude='/.git' \
+  --filter="dir-merge,- .gitignore" \
   ./ \
   "$user@$ip:/tmp/nixos-config"
 
