@@ -1,8 +1,9 @@
+set -x
+
 ip=""
 host_public_key=""
 secret_file=""
 secret_name=""
-user="root"
 
 while true; do
   case "$1" in
@@ -20,10 +21,6 @@ while true; do
     ;;
   --secret-name)
     secret_name="$2"
-    shift 2
-    ;;
-  --user)
-    user="$2"
     shift 2
     ;;
   *)
@@ -52,7 +49,12 @@ if [ -z "$secret_name" ]; then
   exit 1
 fi
 
+trap 'cd $(pwd)' EXIT
+repo_root=$(git rev-parse --show-toplevel)
+cd "$repo_root" || exit 1
+
 tmpdir=$(mktemp -d)
+
 cleanup() {
   rm -rf "$tmpdir"
 }
@@ -64,14 +66,10 @@ sops \
   --output "$tmpdir/private_key" \
   "$secret_file"
 
-chmod 400 "$tmpdir/private_key"
+chmod 600 "$tmpdir/private_key"
 
 echo "$ip $host_public_key" >"$tmpdir/known_hosts"
 
-exec ssh \
-  -t \
-  -i "$tmpdir/private_key" \
-  -o StrictHostKeyChecking=yes \
-  -o UserKnownHostsFile="$tmpdir/known_hosts" \
-  "$user@$ip" \
+exec rsync \
+  -e "ssh -i $tmpdir/private_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$tmpdir/known_hosts" \
   "$@"
