@@ -69,7 +69,7 @@ chmod 400 "$tmpdir/private_key"
 
 echo "$ip $host_public_key" >"$tmpdir/known_hosts"
 
-ssh \
+exec ssh \
   -t \
   -i "$tmpdir/private_key" \
   -o StrictHostKeyChecking=yes \

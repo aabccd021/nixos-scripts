@@ -84,7 +84,7 @@ rsync \
   ./ \
   "$user@$ip:/tmp/nixos-config"
 
-ssh \
+exec ssh \
   -t \
   -i "$tmpdir/private_key" \
   -o StrictHostKeyChecking=yes \

@@ -1,5 +1,3 @@
-set -x
-
 ip=""
 name=""
 host_public_key=""
@@ -81,6 +79,6 @@ NIX_SSHOPTS="
   -o StrictHostKeyChecking=yes
   -o UserKnownHostsFile=$tmpdir/known_hosts
 " \
-  nixos-rebuild switch \
+  exec nixos-rebuild switch \
   --flake ".#$name" \
   --target-host "$user@$ip"
