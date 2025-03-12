@@ -1,4 +1,5 @@
 ip=""
+name=""
 host_public_key=""
 secret_file=""
 secret_name=""
@@ -8,6 +9,10 @@ while [ $# -gt 0 ]; do
   case "$1" in
   --ip)
     ip="$2"
+    shift 2
+    ;;
+  --name)
+    name="$2"
     shift 2
     ;;
   --host-public-key)
@@ -65,9 +70,19 @@ sops \
   --output "$tmpdir/private_key" \
   "$secret_file"
 
-chmod 400 "$tmpdir/private_key"
+chmod 600 "$tmpdir/private_key"
 
 echo "$ip $host_public_key" >"$tmpdir/known_hosts"
+
+rsync \
+  -e "ssh -i $tmpdir/private_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$tmpdir/known_hosts" \
+  --delete \
+  --archive \
+  --info=progress2 \
+  --human-readable \
+  --no-inc-recursive \
+  ./ \
+  "$user@$ip:/tmp/nixos-config"
 
 exec ssh \
   -t \
@@ -75,4 +90,7 @@ exec ssh \
   -o StrictHostKeyChecking=yes \
   -o UserKnownHostsFile="$tmpdir/known_hosts" \
   "$user@$ip" \
-  "$@"
+  "cd /tmp/nixos-config &&
+   nix --extra-experimental-features 'nix-command flakes' run nixpkgs#git -- config --global --add safe.directory \$PWD &&
+   nixos-rebuild switch --flake /tmp/nixos-config#$name --accept-flake-config
+  "

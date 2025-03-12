@@ -1,4 +1,5 @@
 ip=""
+name=""
 host_public_key=""
 secret_file=""
 secret_name=""
@@ -8,6 +9,10 @@ while [ $# -gt 0 ]; do
   case "$1" in
   --ip)
     ip="$2"
+    shift 2
+    ;;
+  --name)
+    name="$2"
     shift 2
     ;;
   --host-public-key)
@@ -65,14 +70,15 @@ sops \
   --output "$tmpdir/private_key" \
   "$secret_file"
 
-chmod 400 "$tmpdir/private_key"
+chmod 600 "$tmpdir/private_key"
 
 echo "$ip $host_public_key" >"$tmpdir/known_hosts"
 
-exec ssh \
-  -t \
-  -i "$tmpdir/private_key" \
-  -o StrictHostKeyChecking=yes \
-  -o UserKnownHostsFile="$tmpdir/known_hosts" \
-  "$user@$ip" \
-  "$@"
+NIX_SSHOPTS="
+  -i $tmpdir/private_key 
+  -o StrictHostKeyChecking=yes
+  -o UserKnownHostsFile=$tmpdir/known_hosts
+" \
+  exec nixos-rebuild switch \
+  --flake ".#$name" \
+  --target-host "$user@$ip"

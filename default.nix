@@ -1,8 +1,8 @@
 { pkgs }:
 let
   scriptDefs = {
-    # build-locally-and-deploy = [ pkgs.sops ];
-    # send-code-and-rebuild = [ pkgs.sops pkgs.openssh ];
+    nixos-rebuild-local = [ pkgs.sops ];
+    nixos-rebuild-remote = [ pkgs.sops pkgs.openssh ];
     nixos-ssh = [ pkgs.sops pkgs.openssh ];
   };
 in
