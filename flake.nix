@@ -24,19 +24,7 @@
         settings.formatter.shellcheck.options = [ "-s" "sh" ];
       };
 
-      scriptDefs = {
-        # build-locally-and-deploy = [ pkgs.sops ];
-        # send-code-and-rebuild = [ pkgs.sops pkgs.openssh ];
-        nixos-ssh = [ pkgs.sops pkgs.openssh ];
-      };
-
-      scripts = builtins.mapAttrs
-        (name: runtimeInputs: pkgs.writeShellApplication {
-          name = name;
-          runtimeInputs = runtimeInputs;
-          text = builtins.readFile "${./scripts}/${name}.sh";
-        })
-        scriptDefs;
+      scripts = import ./default.nix { pkgs = pkgs; };
 
       packages = scripts // {
         formatting = treefmtEval.config.build.check self;
