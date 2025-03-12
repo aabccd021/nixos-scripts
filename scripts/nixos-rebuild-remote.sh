@@ -58,7 +58,12 @@ if [ -z "$secret_name" ]; then
   exit 1
 fi
 
+trap 'cd $(pwd)' EXIT
+repo_root=$(git rev-parse --show-toplevel)
+cd "$repo_root" || exit 1
+
 tmpdir=$(mktemp -d)
+
 cleanup() {
   rm -rf "$tmpdir"
 }
