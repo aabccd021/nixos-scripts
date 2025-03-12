@@ -3,7 +3,7 @@ host_public_key=""
 secret_file=""
 secret_name=""
 
-while true; do
+while [ $# -gt 0 ]; do
   case "$1" in
   --ip)
     ip="$2"
