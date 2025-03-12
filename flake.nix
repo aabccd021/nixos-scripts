@@ -53,7 +53,7 @@
     in
     {
 
-      overlays.x86_64-linux = overlay;
+      overlays.default = overlay;
 
       formatter.x86_64-linux = treefmtEval.config.build.wrapper;
 
