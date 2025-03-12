@@ -27,7 +27,7 @@
       scriptDefs = {
         # build-locally-and-deploy = [ pkgs.sops ];
         # send-code-and-rebuild = [ pkgs.sops pkgs.openssh ];
-        ssh = [ pkgs.sops pkgs.openssh ];
+        nixos-ssh = [ pkgs.sops pkgs.openssh ];
       };
 
       scripts = builtins.mapAttrs
