@@ -31,14 +31,6 @@
         formatting = treefmtEval.config.build.check self;
       };
 
-      apps = builtins.mapAttrs
-        (name: script: {
-          type = "app";
-          program = pkgs.lib.getExe script;
-        })
-        scripts;
-
-
     in
     {
 
@@ -48,7 +40,12 @@
 
       packages.x86_64-linux = packages;
 
-      apps.x86_64-linux = apps;
+      apps.x86_64-linux = builtins.mapAttrs
+        (name: script: {
+          type = "app";
+          program = pkgs.lib.getExe script;
+        })
+        scripts;
 
       checks.x86_64-linux = packages;
     };
