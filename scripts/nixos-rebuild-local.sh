@@ -74,11 +74,7 @@ chmod 600 "$tmpdir/private_key"
 
 echo "$ip $host_public_key" >"$tmpdir/known_hosts"
 
-NIX_SSHOPTS="
-  -i $tmpdir/private_key 
-  -o StrictHostKeyChecking=yes
-  -o UserKnownHostsFile=$tmpdir/known_hosts
-" \
+NIX_SSHOPTS="-i $tmpdir/private_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$tmpdir/known_hosts" \
   exec nixos-rebuild switch \
   --flake ".#$name" \
   --target-host "$user@$ip"
