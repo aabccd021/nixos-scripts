@@ -44,6 +44,7 @@
         (name: script: {
           type = "app";
           program = pkgs.lib.getExe script;
+          meta.description = "Script ${name}";
         })
         scripts;
 
