@@ -74,8 +74,6 @@ cleanup() {
 }
 trap cleanup EXIT
 
-echo "$SOPS_AGE_KEY_CMD"
-
 sops \
   --decrypt \
   --extract "[\"$secret_name\"]" \
