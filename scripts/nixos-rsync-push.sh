@@ -1,9 +1,12 @@
+set -x
+
 ip=""
 host_public_key=""
 secret_file=""
 secret_name=""
 src=""
 dst=""
+flags=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -73,6 +76,8 @@ cleanup() {
 }
 trap cleanup EXIT
 
+echo "$SOPS_AGE_KEY_CMD"
+
 sops \
   --decrypt \
   --extract "[\"$secret_name\"]" \
@@ -83,9 +88,9 @@ chmod 600 "$tmpdir/private_key"
 
 echo "$ip $host_public_key" >"$tmpdir/known_hosts"
 
-exec eval "rsync
-  -e 'ssh -i $tmpdir/private_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$tmpdir/known_hosts'
-  $flags
-  $src
-  root@$ip:$dst
+eval "rsync \
+  -e 'ssh -i $tmpdir/private_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$tmpdir/known_hosts' \
+  $flags \
+  $src \
+  root@$ip:$dst \
 "

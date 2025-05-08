@@ -3,7 +3,7 @@
   nixConfig.allow-import-from-derivation = false;
 
   inputs.treefmt-nix.url = "github:numtide/treefmt-nix";
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
   outputs = { self, nixpkgs, treefmt-nix, }:
     let
