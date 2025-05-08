@@ -2,6 +2,8 @@ ip=""
 host_public_key=""
 secret_file=""
 secret_name=""
+src=""
+dst=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -20,6 +22,19 @@ while [ $# -gt 0 ]; do
   --secret-name)
     secret_name="$2"
     shift 2
+    ;;
+  --source)
+    src="$2"
+    shift 2
+    ;;
+  --destination)
+    dst="$2"
+    shift 2
+    ;;
+  --)
+    shift
+    flags="$@"
+    break
     ;;
   *)
     break
@@ -68,6 +83,9 @@ chmod 600 "$tmpdir/private_key"
 
 echo "$ip $host_public_key" >"$tmpdir/known_hosts"
 
-exec rsync \
-  -e "ssh -i $tmpdir/private_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$tmpdir/known_hosts" \
-  "$@"
+exec eval "rsync
+  -e 'ssh -i $tmpdir/private_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$tmpdir/known_hosts'
+  $flags
+  $src
+  root@$ip:$dst
+"

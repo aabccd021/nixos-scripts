@@ -2,10 +2,8 @@
 
   nixConfig.allow-import-from-derivation = false;
 
-  inputs = {
-    treefmt-nix.url = "github:numtide/treefmt-nix";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
-  };
+  inputs.treefmt-nix.url = "github:numtide/treefmt-nix";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
 
   outputs = { self, nixpkgs, treefmt-nix, }:
     let
@@ -18,36 +16,37 @@
         projectRootFile = "flake.nix";
         programs.nixpkgs-fmt.enable = true;
         programs.prettier.enable = true;
-        programs.stylua.enable = true;
         programs.shfmt.enable = true;
         programs.shellcheck.enable = true;
         settings.formatter.shellcheck.options = [ "-s" "sh" ];
         settings.global.excludes = [ "LICENSE" ];
       };
 
+      formatter = treefmtEval.config.build.wrapper;
+
       scripts = import ./default.nix { pkgs = pkgs; };
 
-      packages = scripts // {
-        formatting = treefmtEval.config.build.check self;
+      devShells.default = pkgs.mkShellNoCC {
+        buildInputs = [ pkgs.nixd ];
       };
+
+      packages = scripts // devShells // {
+        formatting = treefmtEval.config.build.check self;
+        formatter = formatter;
+      };
+
 
     in
     {
 
       overlays.default = overlay;
+      formatter.x86_64-linux = formatter;
+      devShells.x86_64-linux = devShells;
 
-      formatter.x86_64-linux = treefmtEval.config.build.wrapper;
+      packages.x86_64-linux = packages // rec {
+        gcroot = pkgs.linkFarm "gcroot" packages;
+        default = gcroot;
+      };
 
-      packages.x86_64-linux = packages;
-
-      apps.x86_64-linux = builtins.mapAttrs
-        (name: script: {
-          type = "app";
-          program = pkgs.lib.getExe script;
-          meta.description = "Script ${name}";
-        })
-        scripts;
-
-      checks.x86_64-linux = packages;
     };
 }
