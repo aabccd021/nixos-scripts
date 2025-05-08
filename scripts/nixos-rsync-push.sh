@@ -1,5 +1,3 @@
-set -x
-
 ip=""
 host_public_key=""
 secret_file=""
