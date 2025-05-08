@@ -42,6 +42,7 @@
       overlays.default = overlay;
       formatter.x86_64-linux = formatter;
       devShells.x86_64-linux = devShells;
+      checks.x86_64-linux = packages;
 
       packages.x86_64-linux = packages // rec {
         gcroot = pkgs.linkFarm "gcroot" packages;
