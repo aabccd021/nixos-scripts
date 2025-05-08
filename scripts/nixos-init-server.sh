@@ -32,10 +32,6 @@ while [ $# -gt 0 ]; do
     system="$2"
     shift 2
     ;;
-  --hw-config)
-    hw_config="$2"
-    shift 2
-    ;;
   --)
     shift
     flags="$*"
@@ -69,11 +65,6 @@ fi
 
 if [ -z "$system" ]; then
   echo "Missing --system"
-  exit 1
-fi
-
-if [ -z "$hw_config" ]; then
-  echo "Missing --hw-config"
   exit 1
 fi
 
