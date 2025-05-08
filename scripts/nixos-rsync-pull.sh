@@ -87,6 +87,6 @@ echo "$ip $host_public_key" >"$tmpdir/known_hosts"
 eval "rsync \
   -e 'ssh -i $tmpdir/private_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$tmpdir/known_hosts' \
   $flags \
-  $src \
-  root@$ip:$dst \
+  root@$ip:$src \
+  $dst \
 "
