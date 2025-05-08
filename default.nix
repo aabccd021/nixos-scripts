@@ -6,6 +6,7 @@ let
     nixos-ssh = [ pkgs.sops pkgs.openssh ];
     nixos-rsync-push = [ pkgs.sops pkgs.openssh pkgs.rsync ];
     nixos-rsync-pull = [ pkgs.sops pkgs.openssh pkgs.rsync ];
+    nixos-init-server = [ pkgs.sops pkgs.openssh ];
   };
 in
 
