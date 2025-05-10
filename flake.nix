@@ -35,7 +35,6 @@
         formatter = formatter;
       };
 
-
     in
     {
 
