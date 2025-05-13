@@ -73,15 +73,6 @@ if [ -z "$SSHPASS" ]; then
   exit 1
 fi
 
-host="$user@$ip"
-
-printf "Are you sure you want to initialize a server at %s? (y/n) " "$host"
-read -r confirm
-if [ "$confirm" != "y" ]; then
-  echo "Aborted"
-  exit 1
-fi
-
 nix build --no-link ".#nixosConfigurations.$system.config.system.build.toplevel"
 
 repo_root=$(git rev-parse --show-toplevel)
@@ -106,6 +97,6 @@ eval "nix run github:nix-community/nixos-anywhere -- \
   --extra-files '$extra_files' \
   --flake '.#$system' \
   --env-password \
-  --target-host '$host' \
+  --target-host '$user@$ip' \
   $flags \
 "
