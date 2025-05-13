@@ -24,11 +24,11 @@ while [ $# -gt 0 ]; do
     secret_name="$2"
     shift 2
     ;;
-  --source)
+  --from)
     src="$2"
     shift 2
     ;;
-  --destination)
+  --to)
     dst="$2"
     shift 2
     ;;
@@ -60,6 +60,16 @@ fi
 
 if [ -z "$secret_name" ]; then
   echo "Missing --secret-name"
+  exit 1
+fi
+
+if [ -z "$src" ]; then
+  echo "Missing --from"
+  exit 1
+fi
+
+if [ -z "$dst" ]; then
+  echo "Missing --to"
   exit 1
 fi
 
