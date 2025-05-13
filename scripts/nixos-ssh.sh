@@ -71,17 +71,13 @@ sops \
 
 chmod 400 "$tmpdir/private_key"
 
-host="$ip"
-if [ -n "$port" ]; then
-  host="[$ip]:$port"
-fi
-
-echo "$host $host_public_key" >"$tmpdir/known_hosts"
+echo "[$ip]:$port $host_public_key" >"$tmpdir/known_hosts"
 
 exec ssh \
   -t \
   -i "$tmpdir/private_key" \
   -o StrictHostKeyChecking=yes \
   -o UserKnownHostsFile="$tmpdir/known_hosts" \
+  -p "$port" \
   "$user@$ip" \
   "$@"
