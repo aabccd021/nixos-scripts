@@ -3,6 +3,7 @@ host_public_key=""
 secret_file=""
 secret_name=""
 user="root"
+port="22"
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -24,6 +25,10 @@ while [ $# -gt 0 ]; do
     ;;
   --user)
     user="$2"
+    shift 2
+    ;;
+  --port)
+    port="$2"
     shift 2
     ;;
   *)
@@ -66,7 +71,12 @@ sops \
 
 chmod 400 "$tmpdir/private_key"
 
-echo "$ip $host_public_key" >"$tmpdir/known_hosts"
+host="$ip"
+if [ -n "$port" ]; then
+  host="[$ip]:$port"
+fi
+
+echo "$host $host_public_key" >"$tmpdir/known_hosts"
 
 exec ssh \
   -t \
