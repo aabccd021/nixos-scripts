@@ -71,7 +71,12 @@ sops \
 
 chmod 400 "$tmpdir/private_key"
 
-echo "[$ip]:$port $host_public_key" >"$tmpdir/known_hosts"
+host="$ip"
+if [ "$port" != "22" ]; then
+  host="[$ip]:$port"
+fi
+
+echo "$host $host_public_key" >"$tmpdir/known_hosts"
 
 exec ssh \
   -t \
