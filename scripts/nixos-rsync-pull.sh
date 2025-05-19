@@ -94,6 +94,7 @@ chmod 600 "$tmpdir/private_key"
 
 echo "$host $host_public_key" >"$tmpdir/known_hosts"
 
+set -x
 eval "rsync \
   -e 'ssh -i $tmpdir/private_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$tmpdir/known_hosts' \
   $flags \

@@ -78,6 +78,7 @@ fi
 
 echo "$known_host $host_public_key" >"$tmpdir/known_hosts"
 
+set -x
 exec ssh \
   -i "$tmpdir/private_key" \
   -o StrictHostKeyChecking=yes \

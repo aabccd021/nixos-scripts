@@ -93,6 +93,7 @@ sops \
   --output "$target_age_key_path" \
   "$secret_file"
 
+set -x
 eval "nix run github:nix-community/nixos-anywhere -- \
   --extra-files '$extra_files' \
   --flake '.#$system' \

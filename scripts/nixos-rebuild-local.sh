@@ -86,6 +86,7 @@ echo "$host $host_public_key" >"$tmpdir/known_hosts"
 NIX_SSHOPTS="-i $tmpdir/private_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$tmpdir/known_hosts"
 export NIX_SSHOPTS
 
+set -x
 nix copy \
   --to "ssh://$user@$host?$sshStoreSettings" \
   --substitute-on-destination \
