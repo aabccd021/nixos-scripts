@@ -1,4 +1,4 @@
-ip=""
+host=""
 name=""
 host_public_key=""
 secret_file=""
@@ -7,8 +7,8 @@ user="root"
 
 while [ $# -gt 0 ]; do
   case "$1" in
-  --ip)
-    ip="$2"
+  --host)
+    host="$2"
     shift 2
     ;;
   --name)
@@ -38,8 +38,8 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-if [ -z "$ip" ]; then
-  echo "Missing --ip"
+if [ -z "$host" ]; then
+  echo "Missing --host"
   exit 1
 fi
 
@@ -77,7 +77,7 @@ sops \
 
 chmod 600 "$tmpdir/private_key"
 
-echo "$ip $host_public_key" >"$tmpdir/known_hosts"
+echo "$host $host_public_key" >"$tmpdir/known_hosts"
 
 rsync \
   -e "ssh -i $tmpdir/private_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$tmpdir/known_hosts" \
@@ -89,14 +89,14 @@ rsync \
   --exclude='/.git' \
   --filter="dir-merge,- .gitignore" \
   ./ \
-  "$user@$ip:/tmp/nixos-config"
+  "$user@$host:/tmp/nixos-config"
 
 exec ssh \
   -t \
   -i "$tmpdir/private_key" \
   -o StrictHostKeyChecking=yes \
   -o UserKnownHostsFile="$tmpdir/known_hosts" \
-  "$user@$ip" \
+  "$user@$host" \
   "cd /tmp/nixos-config &&
    nix --extra-experimental-features 'nix-command flakes' run nixpkgs#git -- config --global --add safe.directory \$PWD &&
    nixos-rebuild switch --flake /tmp/nixos-config#$name --accept-flake-config

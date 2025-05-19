@@ -1,4 +1,4 @@
-ip=""
+host=""
 user="root"
 secret_file=""
 secret_name=""
@@ -8,8 +8,8 @@ flags=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
-  --ip)
-    ip="$2"
+  --host)
+    host="$2"
     shift 2
     ;;
   --secret-file)
@@ -43,8 +43,8 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-if [ -z "$ip" ]; then
-  echo "Missing --ip"
+if [ -z "$host" ]; then
+  echo "Missing --host"
   exit 1
 fi
 
@@ -97,6 +97,6 @@ eval "nix run github:nix-community/nixos-anywhere -- \
   --extra-files '$extra_files' \
   --flake '.#$system' \
   --env-password \
-  --target-host '$user@$ip' \
+  --target-host '$user@$host' \
   $flags \
 "

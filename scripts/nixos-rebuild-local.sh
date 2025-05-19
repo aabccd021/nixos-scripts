@@ -1,14 +1,15 @@
-ip=""
+host=""
 name=""
 host_public_key=""
 secret_file=""
 secret_name=""
 user="root"
+sshStoreSettings=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
-  --ip)
-    ip="$2"
+  --host)
+    host="$2"
     shift 2
     ;;
   --name)
@@ -31,6 +32,14 @@ while [ $# -gt 0 ]; do
     user="$2"
     shift 2
     ;;
+  --ssh-store-setting)
+    key=$2
+    shift
+    value=$2
+    shift
+    sshStoreSettings="$sshStoreSettings$key=$value&"
+    shift
+    ;;
   *)
     echo "Unknown option: $1"
     exit 1
@@ -38,8 +47,8 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-if [ -z "$ip" ]; then
-  echo "Missing --ip"
+if [ -z "$host" ]; then
+  echo "Missing --host"
   exit 1
 fi
 
@@ -72,9 +81,16 @@ sops \
 
 chmod 600 "$tmpdir/private_key"
 
-echo "$ip $host_public_key" >"$tmpdir/known_hosts"
+echo "$host $host_public_key" >"$tmpdir/known_hosts"
 
-NIX_SSHOPTS="-i $tmpdir/private_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$tmpdir/known_hosts" \
-  exec nixos-rebuild switch \
+NIX_SSHOPTS="-i $tmpdir/private_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$tmpdir/known_hosts"
+export NIX_SSHOPTS
+
+nix copy \
+  --to "ssh://$user@$host?$sshStoreSettings" \
+  --substitute-on-destination \
+  ".#.nixosConfigurations.$name.config.system.build.toplevel"
+
+nixos-rebuild switch \
   --flake ".#$name" \
-  --target-host "$user@$ip"
+  --target-host "$user@$host"

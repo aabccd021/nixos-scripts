@@ -1,4 +1,4 @@
-ip=""
+host=""
 host_public_key=""
 secret_file=""
 secret_name=""
@@ -7,8 +7,8 @@ port="22"
 
 while [ $# -gt 0 ]; do
   case "$1" in
-  --ip)
-    ip="$2"
+  --host)
+    host="$2"
     shift 2
     ;;
   --host-public-key)
@@ -37,8 +37,8 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-if [ -z "$ip" ]; then
-  echo "Missing --ip"
+if [ -z "$host" ]; then
+  echo "Missing --host"
   exit 1
 fi
 
@@ -71,17 +71,17 @@ sops \
 
 chmod 400 "$tmpdir/private_key"
 
-host="$ip"
+known_host="$host"
 if [ "$port" != "22" ]; then
-  host="[$ip]:$port"
+  known_host="[$host]:$port"
 fi
 
-echo "$host $host_public_key" >"$tmpdir/known_hosts"
+echo "$known_host $host_public_key" >"$tmpdir/known_hosts"
 
 exec ssh \
   -i "$tmpdir/private_key" \
   -o StrictHostKeyChecking=yes \
   -o UserKnownHostsFile="$tmpdir/known_hosts" \
   -p "$port" \
-  "$user@$ip" \
+  "$user@$host" \
   "$@"

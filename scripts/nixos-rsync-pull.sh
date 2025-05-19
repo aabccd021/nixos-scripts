@@ -1,4 +1,4 @@
-ip=""
+host=""
 host_public_key=""
 secret_file=""
 secret_name=""
@@ -8,8 +8,8 @@ flags=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
-  --ip)
-    ip="$2"
+  --host)
+    host="$2"
     shift 2
     ;;
   --host-public-key)
@@ -43,8 +43,8 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-if [ -z "$ip" ]; then
-  echo "Missing --ip"
+if [ -z "$host" ]; then
+  echo "Missing --host"
   exit 1
 fi
 
@@ -92,11 +92,11 @@ sops \
 
 chmod 600 "$tmpdir/private_key"
 
-echo "$ip $host_public_key" >"$tmpdir/known_hosts"
+echo "$host $host_public_key" >"$tmpdir/known_hosts"
 
 eval "rsync \
   -e 'ssh -i $tmpdir/private_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$tmpdir/known_hosts' \
   $flags \
-  root@$ip:$src \
+  root@$host:$src \
   $dst \
 "
