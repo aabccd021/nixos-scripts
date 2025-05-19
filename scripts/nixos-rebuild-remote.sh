@@ -80,6 +80,7 @@ chmod 600 "$tmpdir/private_key"
 echo "$host $host_public_key" >"$tmpdir/known_hosts"
 
 set -x
+
 rsync \
   -e "ssh -i $tmpdir/private_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$tmpdir/known_hosts" \
   --delete \
@@ -92,7 +93,7 @@ rsync \
   ./ \
   "$user@$host:/tmp/nixos-config"
 
-exec ssh \
+ssh \
   -t \
   -i "$tmpdir/private_key" \
   -o StrictHostKeyChecking=yes \
@@ -102,3 +103,5 @@ exec ssh \
    nix --extra-experimental-features 'nix-command flakes' run nixpkgs#git -- config --global --add safe.directory \$PWD &&
    nixos-rebuild switch --flake /tmp/nixos-config#$name --accept-flake-config
   "
+
+set +x

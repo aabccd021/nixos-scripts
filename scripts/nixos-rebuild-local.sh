@@ -4,7 +4,8 @@ host_public_key=""
 secret_file=""
 secret_name=""
 user="root"
-sshStoreSettings=""
+ssh_store_settings=""
+substitute_on_destination=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -37,7 +38,11 @@ while [ $# -gt 0 ]; do
     shift
     value=$2
     shift
-    sshStoreSettings="$sshStoreSettings$key=$value&"
+    ssh_store_settings="$ssh_store_settings$key=$value&"
+    shift
+    ;;
+  --substitute-on-destination)
+    substitute_on_destination="--substitute-on-destination"
     shift
     ;;
   *)
@@ -87,11 +92,14 @@ NIX_SSHOPTS="-i $tmpdir/private_key -o StrictHostKeyChecking=yes -o UserKnownHos
 export NIX_SSHOPTS
 
 set -x
+
 nix copy \
-  --to "ssh://$user@$host?$sshStoreSettings" \
-  --substitute-on-destination \
+  --to "ssh://$user@$host?$ssh_store_settings" \
+  "$substitute_on_destination" \
   ".#.nixosConfigurations.$name.config.system.build.toplevel"
 
 nixos-rebuild switch \
   --flake ".#$name" \
   --target-host "$user@$host"
+
+set +x
