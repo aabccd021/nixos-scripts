@@ -91,8 +91,6 @@ echo "$host $host_public_key" >"$tmpdir/known_hosts"
 NIX_SSHOPTS="-i $tmpdir/private_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$tmpdir/known_hosts"
 export NIX_SSHOPTS
 
-set -x
-
 nix copy \
   --to "ssh://$user@$host?$ssh_store_settings" \
   "$substitute_on_destination" \
@@ -101,5 +99,3 @@ nix copy \
 nixos-rebuild switch \
   --flake ".#$name" \
   --target-host "$user@$host"
-
-set +x

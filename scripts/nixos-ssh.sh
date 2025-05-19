@@ -78,8 +78,6 @@ fi
 
 echo "$known_host $host_public_key" >"$tmpdir/known_hosts"
 
-set -x
-
 ssh \
   -i "$tmpdir/private_key" \
   -o StrictHostKeyChecking=yes \
@@ -87,5 +85,3 @@ ssh \
   -p "$port" \
   "$user@$host" \
   "$@"
-
-set +x
