@@ -93,10 +93,10 @@ sops \
   --output "$target_age_key_path" \
   "$secret_file"
 
-eval "nix run github:nix-community/nixos-anywhere -- \
-  --extra-files '$extra_files' \
-  --flake '.#$system' \
+# shellcheck disable=SC2086
+exec nixos-anywhere \
+  --extra-files "$extra_files" \
+  --flake ".#$system" \
   --env-password \
-  --target-host '$user@$host' \
-  $flags \
-"
+  --target-host "$user@$host" \
+  $flags
