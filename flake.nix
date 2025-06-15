@@ -55,9 +55,9 @@
         scripts
         // devShells
         // {
-          allInputs = allInputs;
           formatting = treefmtEval.config.build.check self;
           formatter = formatter;
+          allInputs = collectInputs inputs;
         };
 
     in
