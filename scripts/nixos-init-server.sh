@@ -94,7 +94,7 @@ sops \
   "$secret_file"
 
 # shellcheck disable=SC2086
-exec nixos-anywhere \
+nixos-anywhere \
   --extra-files "$extra_files" \
   --flake ".#$system" \
   --env-password \
