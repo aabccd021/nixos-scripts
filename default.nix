@@ -14,6 +14,10 @@ let
       pkgs.sops
       pkgs.openssh
     ];
+    nixos-mosh = [
+      pkgs.sops
+      pkgs.mosh
+    ];
     nixos-rsync-push = [
       pkgs.sops
       pkgs.openssh
