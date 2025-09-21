@@ -79,9 +79,9 @@ fi
 echo "$known_host $host_public_key" >"$tmpdir/known_hosts"
 
 mosh \
-  -i "$tmpdir/private_key" \
-  -o StrictHostKeyChecking=yes \
-  -o UserKnownHostsFile="$tmpdir/known_hosts" \
-  -p "$port" \
-  "$user@$host" \
-  "$@"
+  --ssh="ssh 
+    -i $tmpdir/private_key 
+    -o StrictHostKeyChecking=yes 
+    -o UserKnownHostsFile=$tmpdir/known_hosts 
+    -p $port" \
+  "$user@$host" "$@"
