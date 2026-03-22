@@ -1,7 +1,7 @@
 host=""
 user="root"
 secret_file=""
-secret_name=""
+identity="$HOME/.ssh/id_ed25519"
 secret_path=""
 system=""
 flags=""
@@ -16,8 +16,8 @@ while [ $# -gt 0 ]; do
     secret_file="$2"
     shift 2
     ;;
-  --secret-name)
-    secret_name="$2"
+  --identity)
+    identity="$2"
     shift 2
     ;;
   --secret-path)
@@ -53,11 +53,6 @@ if [ -z "$secret_file" ]; then
   exit 1
 fi
 
-if [ -z "$secret_name" ]; then
-  echo "Missing --secret-name"
-  exit 1
-fi
-
 if [ -z "$secret_path" ]; then
   echo "Missing --secret-path"
   exit 1
@@ -87,11 +82,7 @@ trap cleanup EXIT
 target_age_key_path="$extra_files/$secret_path"
 install -d -m755 "$(dirname "$target_age_key_path")"
 
-sops \
-  --decrypt \
-  --extract "[\"$secret_name\"]" \
-  --output "$target_age_key_path" \
-  "$secret_file"
+age -d -i "$identity" -o "$target_age_key_path" "$secret_file"
 
 # shellcheck disable=SC2086
 nixos-anywhere \

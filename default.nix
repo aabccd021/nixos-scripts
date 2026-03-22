@@ -2,34 +2,34 @@
 let
   scriptDefs = {
     nixos-rebuild-local = [
-      pkgs.sops
+      pkgs.age
       pkgs.openssh
     ];
     nixos-rebuild-remote = [
-      pkgs.sops
+      pkgs.age
       pkgs.openssh
       pkgs.rsync
     ];
     nixos-ssh = [
-      pkgs.sops
+      pkgs.age
       pkgs.openssh
     ];
     nixos-mosh = [
-      pkgs.sops
+      pkgs.age
       pkgs.mosh
     ];
     nixos-rsync-push = [
-      pkgs.sops
+      pkgs.age
       pkgs.openssh
       pkgs.rsync
     ];
     nixos-rsync-pull = [
-      pkgs.sops
+      pkgs.age
       pkgs.openssh
       pkgs.rsync
     ];
     nixos-init-server = [
-      pkgs.sops
+      pkgs.age
       pkgs.openssh
     ];
   };
@@ -38,8 +38,8 @@ in
 builtins.mapAttrs (
   name: runtimeInputs:
   pkgs.writeShellApplication {
-    name = name;
-    runtimeInputs = runtimeInputs;
+    inherit name runtimeInputs;
+    inheritPath = false;
     text = builtins.readFile "${./scripts}/${name}.sh";
   }
 ) scriptDefs

@@ -2,7 +2,7 @@ host=""
 name=""
 host_public_key=""
 secret_file=""
-secret_name=""
+identity="$HOME/.ssh/id_ed25519"
 user="root"
 ssh_store_settings=""
 substitute_on_destination=""
@@ -25,8 +25,8 @@ while [ $# -gt 0 ]; do
     secret_file="$2"
     shift 2
     ;;
-  --secret-name)
-    secret_name="$2"
+  --identity)
+    identity="$2"
     shift 2
     ;;
   --user)
@@ -67,22 +67,13 @@ if [ -z "$secret_file" ]; then
   exit 1
 fi
 
-if [ -z "$secret_name" ]; then
-  echo "Missing --secret-name"
-  exit 1
-fi
-
 tmpdir=$(mktemp -d)
 cleanup() {
   rm -rf "$tmpdir"
 }
 trap cleanup EXIT
 
-sops \
-  --decrypt \
-  --extract "[\"$secret_name\"]" \
-  --output "$tmpdir/private_key" \
-  "$secret_file"
+age -d -i "$identity" -o "$tmpdir/private_key" "$secret_file"
 
 chmod 600 "$tmpdir/private_key"
 
