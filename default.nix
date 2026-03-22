@@ -4,12 +4,16 @@ let
     nixos-rebuild-local = [
       pkgs.age
       pkgs.coreutils
+      pkgs.nix
+      pkgs.nixos-rebuild
       pkgs.openssh
     ];
     nixos-rebuild-remote = [
       pkgs.age
       pkgs.coreutils
       pkgs.git
+      pkgs.nix
+      pkgs.nixos-rebuild
       pkgs.openssh
       pkgs.rsync
     ];
